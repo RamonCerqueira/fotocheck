@@ -43,22 +43,48 @@ const serverTypeSelect = document.getElementById('serverType');
 const apiUrlInput = document.getElementById('apiUrl');
 const gdriveHelp = document.getElementById('gdriveHelp');
 
+// Safe localStorage wrappers to prevent crashes in restricted environments (e.g., ERP embedded webviews)
+function safeGetItem(key, defaultValue) {
+    try {
+        return localStorage.getItem(key) || defaultValue;
+    } catch (e) {
+        console.warn("Storage access denied:", e);
+        return defaultValue;
+    }
+}
+
+function safeSetItem(key, value) {
+    try {
+        localStorage.setItem(key, value);
+    } catch (e) {
+        console.warn("Storage write denied:", e);
+    }
+}
+
 // Initialize configuration
 const config = {
-    serverType: localStorage.getItem('photo_serverType') || 'local',
-    apiUrl: localStorage.getItem('photo_apiUrl') || 'http://localhost:3000'
+    serverType: safeGetItem('photo_serverType', 'local'),
+    apiUrl: safeGetItem('photo_apiUrl', 'http://localhost:3000')
 };
 
 // ----------------------------------------------------
 // Page Load Initialization
 // ----------------------------------------------------
-window.addEventListener('DOMContentLoaded', () => {
-    // 1. Read filename from URL query (support both 'file' and 'filename')
+function initApp() {
+    // 1. Setup initial settings form values
+    serverTypeSelect.value = config.serverType;
+    apiUrlInput.value = config.apiUrl;
+    toggleGDriveHelp();
+
+    // 2. Attach Event Listeners (Must do this first so buttons always work)
+    setupEventListeners();
+
+    // 3. Read filename from URL query (support both 'file' and 'filename')
     const urlParams = new URLSearchParams(window.location.search);
     currentFileParam = urlParams.get('file') || urlParams.get('filename');
     
     if (!currentFileParam) {
-        fileNameDisplay.textContent = 'Erro: Nenhum arquivo especificado (?file=nome.jpg)';
+        fileNameDisplay.textContent = 'Aguardando parâmetro (?file=nome.jpg)...';
         fileNameDisplay.style.borderColor = 'var(--danger)';
         updateStatusBadge('error', 'Sem Parâmetro');
         return;
@@ -67,17 +93,16 @@ window.addEventListener('DOMContentLoaded', () => {
     // Clean up filename (make sure it ends with .jpg or similar)
     fileNameDisplay.textContent = currentFileParam;
     
-    // 2. Setup initial settings form values
-    serverTypeSelect.value = config.serverType;
-    apiUrlInput.value = config.apiUrl;
-    toggleGDriveHelp();
-
-    // 3. Load current image
+    // 4. Load current image
     loadCurrentPhoto();
-    
-    // 4. Attach Event Listeners
-    setupEventListeners();
-});
+}
+
+// Robust page initialization that runs even if DOMContentLoaded already fired
+if (document.readyState === 'loading') {
+    window.addEventListener('DOMContentLoaded', initApp);
+} else {
+    initApp();
+}
 
 // ----------------------------------------------------
 // Core Photo Loading Lógica
@@ -220,8 +245,8 @@ function setupEventListeners() {
         config.serverType = serverTypeSelect.value;
         config.apiUrl = apiUrlInput.value.trim();
         
-        localStorage.setItem('photo_serverType', config.serverType);
-        localStorage.setItem('photo_apiUrl', config.apiUrl);
+        safeSetItem('photo_serverType', config.serverType);
+        safeSetItem('photo_apiUrl', config.apiUrl);
         
         settingsModal.classList.remove('active');
         loadCurrentPhoto();
