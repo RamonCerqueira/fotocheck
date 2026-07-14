@@ -366,7 +366,11 @@ async function startWebcam() {
         
     } catch (err) {
         console.error("Webcam Error: ", err);
-        alert('Não foi possível acessar a câmera. Verifique se deu permissão.');
+        if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+            alert('Acesso à câmera negado. Por favor, clique no ícone de cadeado (ou configurações) ao lado do endereço do site (URL) no seu navegador e altere a permissão da câmera para "Permitir" para poder tirar a foto.');
+        } else {
+            alert('Não foi possível acessar a câmera. Certifique-se de que ela está conectada, ativada e que nenhum outro aplicativo está utilizando-a.');
+        }
         startCamBtn.disabled = false;
         startCamBtn.textContent = 'Ativar Câmera';
     }
@@ -436,7 +440,7 @@ async function uploadPhoto() {
                 method: 'POST',
                 mode: 'cors',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'text/plain;charset=utf-8'
                 },
                 body: JSON.stringify(payload)
             });
