@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciador de Fotos - ERP Integration</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts for premium typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Settings Trigger -->
+        <button id="settingsBtn" class="icon-btn settings-btn" title="Configurações de Conexão">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        </button>
+
+        <header class="app-header">
+            <div class="logo">
+                <span class="logo-accent">⚡</span> FotosCheckup
+            </div>
+            <h1 class="app-title">Foto do Colaborador</h1>
+            <p id="fileNameDisplay" class="file-display">Aguardando código...</p>
+        </header>
+
+        <main class="app-main">
+            <!-- Photo Showcase Card -->
+            <div class="card photo-card">
+                <div class="photo-viewer-container">
+                    <div id="photoSpinner" class="spinner-overlay hidden">
+                        <div class="spinner"></div>
+                    </div>
+                    <img id="currentPhoto" class="photo-view placeholder" src="" alt="Foto do Colaborador" onerror="handleImageError()">
+                    <div id="noPhotoPlaceholder" class="no-photo-placeholder">
+                        <svg class="placeholder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        <span>Sem foto cadastrada</span>
+                    </div>
+                </div>
+
+                <div class="photo-actions-footer">
+                    <span id="photoStatusBadge" class="status-badge error">Desconectado</span>
+                </div>
+            </div>
+
+            <!-- Upload & Camera Control Card -->
+            <div class="card control-card">
+                <div class="tabs">
+                    <button id="tabUpload" class="tab-btn active">📁 Enviar Arquivo</button>
+                    <button id="tabCamera" class="tab-btn">📷 Usar Câmera</button>
+                </div>
+
+                <div class="tab-content">
+                    <!-- File Upload Interface -->
+                    <div id="uploadPane" class="pane active">
+                        <div id="dropZone" class="drop-zone">
+                            <input type="file" id="fileInput" accept="image/jpeg,image/png,image/jpg" hidden>
+                            <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                            <p class="drop-text">Arraste a foto aqui ou <span class="highlight">procure no computador</span></p>
+                            <p class="drop-subtext">PNG, JPG ou JPEG</p>
+                        </div>
+                    </div>
+
+                    <!-- Webcam Capture Interface -->
+                    <div id="cameraPane" class="pane">
+                        <div class="webcam-container">
+                            <video id="webcamVideo" autoplay playsinline class="webcam-feed"></video>
+                            <canvas id="photoCanvas" class="hidden"></canvas>
+                        </div>
+                        <div class="camera-controls">
+                            <button id="startCamBtn" class="btn btn-secondary">Ativar Câmera</button>
+                            <button id="captureBtn" class="btn btn-primary hidden" disabled>Capturar Foto</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Shared Preview & Submit Area -->
+                <div id="previewContainer" class="preview-container hidden">
+                    <div class="preview-header">
+                        <h3>Nova Foto Selecionada</h3>
+                        <button id="cancelPreviewBtn" class="close-btn" title="Remover">&times;</button>
+                    </div>
+                    <div class="preview-box">
+                        <img id="imagePreview" src="" alt="Previsualização">
+                    </div>
+                    <button id="uploadBtn" class="btn btn-success btn-full">
+                        <span id="btnText">Salvar Foto no Servidor</span>
+                        <span id="btnSpinner" class="btn-spinner hidden"></span>
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Settings Overlay Modal -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Configurações de Integração</h2>
+                <button id="closeSettingsBtn" class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="serverType">Tipo de Servidor:</label>
+                    <select id="serverType" class="form-control">
+                        <option value="local">Servidor Local (Node.js/Express)</option>
+                        <option value="gdrive">Google Drive (Google Apps Script)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="apiUrl">Endereço da API (URL):</label>
+                    <input type="text" id="apiUrl" class="form-control" placeholder="http://localhost:3000 ou URL do Apps Script">
+                    <small class="help-text">Selecione onde as fotos serão salvas fisicamente.</small>
+                </div>
+
+                <div class="form-group" id="gdriveHelp" style="display: none;">
+                    <div class="info-alert">
+                        <strong>Google Drive Ativo!</strong> Certifique-se de configurar o script no Apps Script e colar a URL "Execução como Aplicativo Web" acima.
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="saveSettingsBtn" class="btn btn-primary">Salvar Configurações</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
