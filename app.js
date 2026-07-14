@@ -79,7 +79,10 @@ function initApp() {
     // 2. Attach Event Listeners (Must do this first so buttons always work)
     setupEventListeners();
 
-    // 3. Read filename from URL query (support both 'file' and 'filename')
+    // 3. Automatically start webcam since it is the default tab
+    startWebcam();
+
+    // 4. Read filename from URL query (support both 'file' and 'filename')
     const urlParams = new URLSearchParams(window.location.search);
     currentFileParam = urlParams.get('file') || urlParams.get('filename');
     
@@ -93,7 +96,7 @@ function initApp() {
     // Clean up filename (make sure it ends with .jpg or similar)
     fileNameDisplay.textContent = currentFileParam;
     
-    // 4. Load current image
+    // 5. Load current image
     loadCurrentPhoto();
 }
 
@@ -304,6 +307,7 @@ function switchTab(type) {
         tabCamera.classList.add('active');
         uploadPane.classList.remove('active');
         cameraPane.classList.add('active');
+        startWebcam();
     }
 }
 
