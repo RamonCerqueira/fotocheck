@@ -153,11 +153,12 @@ function getPhotoUrl(filename) {
 
 // Retorna dinamicamente a URL do servidor local
 function getLocalServerUrl() {
-    if (window.location.protocol.startsWith('http')) {
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
         return window.location.origin;
     }
     return 'http://localhost:3000';
 }
+
 
 // Tenta carregar a imagem a partir do servidor local como fallback
 async function loadLocalPhotoFallback() {
