@@ -1,19 +1,36 @@
 /**
- * SCRIPT PARA DEPLOY NO GOOGLE APPS SCRIPT (Google Drive)
+ * SCRIPT PARA CONFIGURAÇÃO NO GOOGLE APPS SCRIPT (Google Drive)
  * 
- * INSTRUÇÕES DE INSTALAÇÃO:
- * 1. Acesse https://script.google.com/
- * 2. Crie um "Novo projeto".
- * 3. Apague todo o código existente no arquivo `Código.gs` e cole este código completo.
- * 4. Salve o projeto (ex: "ERP Fotos Checkup").
- * 5. Clique em "Implantar" (Deploy) > "Nova implantação" (New deployment).
- * 6. Selecione o tipo: "Aplicativo da Web" (Web App).
- * 7. Configure:
- *    - Executar como: "Eu" (Sua conta Google).
- *    - Quem tem acesso: "Qualquer pessoa" (Anyone) - ISSO É CRÍTICO para que o ERP e o script frontend possam enviar/ler as fotos sem login.
- * 8. Clique em "Implantar" e conceda as permissões de acesso ao Google Drive que forem solicitadas.
- * 9. Copie o "URL do aplicativo da Web" gerado e cole nas configurações da página web.
+ * PASSO A PASSO DETALHADO DE INSTALAÇÃO:
+ * 
+ * 1. Acesse o painel do Google Apps Script: https://script.google.com/
+ * 2. No menu esquerdo, clique no botão azul "+ Novo projeto" (ou "New project").
+ * 3. No editor que abrir, você verá um arquivo padrão chamado `Código.gs`:
+ *    - Apague todo o código existente nele.
+ *    - Cole este código completo dentro dele.
+ * 4. Salve o projeto clicando no ícone de "Disco" (Salvar projeto) na barra superior ou usando Ctrl + S.
+ *    - Dica: Você pode clicar no título "Projeto sem título" lá em cima para renomeá-lo (ex: "ERP Fotos Checkup").
+ * 5. No menu superior, clique em "Implantar" (botão azul) > "Nova implantação" (ou "New deployment").
+ * 6. Na janela que se abrir:
+ *    - Ao lado de "Selecionar tipo", clique no ícone de engrenagem e escolha a opção "Aplicativo da Web" (ou "Web App").
+ *    - Preencha as configurações abaixo exatamente assim:
+ *      * Descrição: pode escrever "v1" (ou deixar em branco).
+ *      * Executar como: selecione "Eu (seu-email@gmail.com)" (Me).
+ *      * Quem tem acesso: selecione "Qualquer pessoa" (Anyone) - ISSO É CRÍTICO! Se selecionar outra opção, o ERP e o site não conseguirão salvar nem ler as fotos.
+ *    - Clique no botão azul "Implantar" (ou "Deploy") no final da janela.
+ * 7. Tela de Autorização (Muito importante!):
+ *    - Uma mensagem surgirá dizendo que é necessária autorização. Clique no botão "Autorizar acesso".
+ *    - Uma janela do Google se abrirá. Selecione a sua conta do Gmail/Google.
+ *    - O Google exibirá um aviso de segurança: "O Google não verificou este app" (Google hasn't verified this app).
+ *    - Não se preocupe, isso é padrão para scripts criados por você. Clique no link pequeno escrito "Avançado" (ou "Advanced") no canto inferior esquerdo.
+ *    - Em seguida, clique em "Acessar ERP Fotos Checkup (não seguro)" (ou "Go to... (unsafe)") que aparecerá logo abaixo.
+ *    - Na tela seguinte, role até o final e clique no botão azul "Permitir" (ou "Allow").
+ * 8. Obtendo a URL final:
+ *    - Após a conclusão da implantação, uma tela mostrará os detalhes.
+ *    - Copie o endereço exibido no campo "URL" (ele termina obrigatoriamente com "/exec", por exemplo: https://script.google.com/macros/s/XXXXX/exec).
+ *    - Cole essa URL no campo de configurações do site (ícone de engrenagem no canto superior direito da página).
  */
+
 
 // Nome da pasta no Google Drive onde as fotos serão armazenadas
 var FOLDER_NAME = "ERP_Fotos";
