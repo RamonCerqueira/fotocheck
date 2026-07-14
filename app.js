@@ -63,8 +63,8 @@ function safeSetItem(key, value) {
 
 // Initialize configuration
 const config = {
-    serverType: safeGetItem('photo_serverType', 'local'),
-    apiUrl: safeGetItem('photo_apiUrl', 'http://localhost:3000')
+    serverType: safeGetItem('photo_serverType', 'gdrive'),
+    apiUrl: safeGetItem('photo_apiUrl', 'https://script.google.com/macros/s/AKfycbwszy0E0wg4PTxibKrDT_BLHdCgwiMt52iVBuIsFyLdwZJCoYyy7YHP_mtGcbY-bV9A/exec')
 };
 
 // ----------------------------------------------------
